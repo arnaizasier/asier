@@ -128,3 +128,15 @@
     font-weight: 500;
     color: #495057;
 }
+
+@media (max-width: 768px) {
+    .table-scroll {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .table-scroll table {
+        min-width: 600px; /* Ajusta según el contenido de tu tabla */
+        border-collapse: collapse;
+    }
+}
