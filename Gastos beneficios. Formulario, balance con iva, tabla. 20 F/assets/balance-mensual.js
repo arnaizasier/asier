@@ -11,14 +11,6 @@ jQuery(document).ready(function($) {
             urlParams.delete('mes');
         }
         
-        // Actualizar botones inmediatamente
-        document.querySelectorAll('.balance-tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.periodo === periodo) {
-                btn.classList.add('active');
-            }
-        });
-
         // Mostrar indicador de carga con animación
         const loadingHtml = `
             <div class="balance-loading">
@@ -100,84 +92,34 @@ jQuery(document).ready(function($) {
     // Hacer la función disponible globalmente
     window.cambiarPeriodoBalance = cambiarPeriodoBalance;
 
-    // Añadir estilos para el indicador de carga y mensajes de error
+    // Añadir botón de refrescar
+    const refreshButtonHtml = `
+        <button id="refresh-balance" class="balance-refresh-btn">Refrescar</button>
+    `;
+    $('.balance-wrapper').prepend(refreshButtonHtml);
+
+    // Añadir evento al botón de refrescar
+    $('#refresh-balance').on('click', function() {
+        const currentPeriodo = new URLSearchParams(window.location.search).get('periodo') || 'mensual';
+        cambiarPeriodoBalance(currentPeriodo);
+    });
+
+    // Añadir estilos para el botón de refrescar
     $('<style>')
         .text(`
-            .balance-content {
-                position: relative;
-                min-height: 200px;
-            }
-            
-            .balance-content.loading {
-                opacity: 0.7;
-                pointer-events: none;
-            }
-            
-            .balance-loading {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(255, 255, 255, 0.9);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                font-size: 16px;
-                color: #666;
-                z-index: 100;
-            }
-            
-            .loading-spinner {
-                width: 40px;
-                height: 40px;
-                border: 4px solid #f3f3f3;
-                border-top: 4px solid #4CAF50;
-                border-radius: 50%;
-                margin-bottom: 10px;
-                animation: spin 1s linear infinite;
-            }
-            
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            
-            .balance-error-message {
-                background-color: #ff5252;
+            .balance-refresh-btn {
+                background-color: #4CAF50;
                 color: white;
-                padding: 12px 20px;
-                border-radius: 4px;
-                margin-bottom: 15px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                animation: slideIn 0.3s ease-out;
-            }
-            
-            .cerrar-error {
-                background: none;
+                padding: 10px 20px;
                 border: none;
-                color: white;
-                font-size: 20px;
+                border-radius: 4px;
                 cursor: pointer;
-                padding: 0 0 0 15px;
+                font-size: 16px;
+                margin-bottom: 20px;
             }
             
-            .cerrar-error:hover {
-                opacity: 0.8;
-            }
-            
-            @keyframes slideIn {
-                from {
-                    transform: translateY(-20px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
+            .balance-refresh-btn:hover {
+                background-color: #45a049;
             }
         `)
         .appendTo('head');
